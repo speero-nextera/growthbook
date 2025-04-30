@@ -25,5 +25,5 @@ jobs:
         uses: google-github-actions/upload-cloud-storage@v1
         with:
           path: frontier.js
-          destination: gs://nextera-gb/
+          destination: nextera-gb
           parent: false  # Set to true if you want to preserve directory structure
