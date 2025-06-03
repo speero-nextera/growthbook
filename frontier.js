@@ -86,8 +86,8 @@ var speero_experiments = {
             console.log('001 VARIANT');
         }
     },
-    "002-speero-home-page": {
-        "status": "draft",
+    "002-speero-aa": {
+        "status": "live",
         0: function() {
             console.log('002 CONTROL');
         },
