@@ -78,7 +78,7 @@ function getCookie(name) {
 // Experiments definition
 var speero_experiments = {
     "001-speero-aa": {
-        "status": "live",
+        "status": "draft",
         0: function() {
             console.log('001 CONTROL');
         },
@@ -87,7 +87,7 @@ var speero_experiments = {
         }
     },
     "002-speero-aa": {
-        "status": "live",
+        "status": "draft",
         0: function() {
             console.log('002 CONTROL');
         },
@@ -96,7 +96,7 @@ var speero_experiments = {
         }
     },
     "005-speero": {
-        "status": "draft",
+        "status": "live",
         0: function() {
             console.log('005 CONTROL');
         },
