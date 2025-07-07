@@ -102,39 +102,41 @@ var speero_experiments = {
         },
         1: function() {
             console.log('005 VARIANT');
-            $('<style>')
-                .prop('type', 'text/css')
-                .html(`
-                    div#menu5 {
-                        height: auto !important;
-                    }
-                    .speero-fro5 {
-                        margin-left: 8px;
-                    }
-                    .speero-fro5 span {
-                        color: white;
-                        font-weight: 700;
-                        padding-left: 12px;
-                    }
-                    .speero-fro5 p {
-                        color: white;
-                        padding-left: 31px;
-                        font-weight: 200;
-                        max-width: 700px;
-                        font-size: 14px;
-                    }
-                    @media (max-width: 600px) {
+            $(document).ready(function() {
+                $('<style>')
+                    .prop('type', 'text/css')
+                    .html(`
+                        div#menu5 {
+                            height: auto !important;
+                        }
                         .speero-fro5 {
-                            margin-left: 0;
+                            margin-left: 8px;
+                        }
+                        .speero-fro5 span {
+                            color: white;
+                            font-weight: 700;
+                            padding-left: 12px;
                         }
                         .speero-fro5 p {
-                            padding-top: 4px;
-                            padding-left: 0;
+                            color: white;
+                            padding-left: 31px;
+                            font-weight: 200;
+                            max-width: 700px;
+                            font-size: 14px;
                         }
-                    }
-                `)
-            .appendTo('head');
-            jQuery('div#menu5').append('<div class="speero-fro5"><img src="/images/icon-lock.png" id="lock" width="18px" alt="Cell" data-toggle="tooltip" data-placement="right" title="" data-original-title="We use a number of security measures to help protect your personal information."><span>Secure Enrollment:</span><p>We recommend providing your SSN to more accurately verify your identity with no impact to your credit score. Our SSL encryption helps ensure your details remain secure.</p></div>');
+                        @media (max-width: 600px) {
+                            .speero-fro5 {
+                                margin-left: 0;
+                            }
+                            .speero-fro5 p {
+                                padding-top: 4px;
+                                padding-left: 0;
+                            }
+                        }
+                    `)
+                .appendTo('head');
+                jQuery('div#menu5').append('<div class="speero-fro5"><img src="/images/icon-lock.png" id="lock" width="18px" alt="Cell" data-toggle="tooltip" data-placement="right" title="" data-original-title="We use a number of security measures to help protect your personal information."><span>Secure Enrollment:</span><p>We recommend providing your SSN to more accurately verify your identity with no impact to your credit score. Our SSL encryption helps ensure your details remain secure.</p></div>');
+            });
         }
     }
 };
