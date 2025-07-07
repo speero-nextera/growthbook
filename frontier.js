@@ -102,8 +102,8 @@ var speero_experiments = {
         },
         1: function() {
             console.log('005 VARIANT');
-            $(document).ready(function() {
-                $('<style>')
+            jQuery(document).ready(function() {
+                jQuery('<style>')
                     .prop('type', 'text/css')
                     .html(`
                         div#menu5 {
