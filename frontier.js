@@ -126,6 +126,9 @@ var speero_experiments = {
                       max-width: 700px;
                       font-size: 14px;
                   }
+                  .speero-fro5 + .speero-fro5 {
+                      display: none !important;
+                  }
                   @media (max-width: 600px) {
                       .speero-fro5 {
                           margin-left: 0;
