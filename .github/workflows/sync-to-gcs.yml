@@ -24,6 +24,8 @@ jobs:
       - name: Upload to GCS
         uses: google-github-actions/upload-cloud-storage@v1
         with:
-          path: frontier.js
+          path: | 
+            frontier.js
+            gexa.js
           destination: nextera-gb
           parent: false  # Set to true if you want to preserve directory structure
