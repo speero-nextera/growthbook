@@ -1,4 +1,4 @@
-// Updated: 2026-01-07 13:40 by Silver Ringvee
+// Updated: 2026-07-20 22:11 by Silver
 // Wait for the GrowthBook SDK to load before running
 window.dataLayer = window.dataLayer || [];
 window.growthbook_queue = window.growthbook_queue || [];
