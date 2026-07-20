@@ -127,7 +127,8 @@ window.growthbook_queue.push(function(gb) {
   window.dataLayer.push({'event': 'speero-source-available', speero_source: currentCookie});
   window.growthbook_config = window.growthbook_config || {};
   window.growthbook_config.attributes = {
-    user_source: currentCookie
+    user_source: currentCookie,
+    qa_mode: getCookie('speero-qa-mode') || "false"
   }
   console.log('source: ' + currentCookie);
 })(); // End user source rules
