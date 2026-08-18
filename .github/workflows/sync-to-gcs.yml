@@ -34,3 +34,10 @@ jobs:
           path: gexa.js
           destination: nextera-gb
           parent: false  # Set to true if you want to preserve directory structure
+
+      - name: Upload to GCS (Companion)
+        uses: google-github-actions/upload-cloud-storage@v1
+        with:
+          path: companion.js
+          destination: nextera-gb
+          parent: false  # Set to true if you want to preserve directory structure
