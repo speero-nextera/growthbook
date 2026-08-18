@@ -1,4 +1,4 @@
-// Updated: 2026-07-20 22:11 by Silver
+// Updated: 2026-08-18 10:45 by Silver
 // Wait for the GrowthBook SDK to load before running
 window.dataLayer = window.dataLayer || [];
 window.growthbook_queue = window.growthbook_queue || [];
@@ -131,6 +131,8 @@ window.growthbook_queue.push(function(gb) {
     qa_mode: getCookie('speero-qa-mode') || "false"
   }
   console.log('source: ' + currentCookie);
+  window.growthbook_config.navigateDelay = 0.5; // Default is 0.1
+  window.growthbook_config.maxNavigateDelay = 2; // Default is 1
 })(); // End user source rules
 
 // Load GrowthBook
