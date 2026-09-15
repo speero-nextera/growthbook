@@ -131,6 +131,8 @@ window.growthbook_queue.push(function(gb) {
     qa_mode: getCookie('speero-qa-mode') || "false"
   }
   console.log('source: ' + currentCookie);
+
+  window.growthbook_config.uuidCookieDomain = ".companionenergy.com"
 })(); // End user source rules
 
 // Load GrowthBook
