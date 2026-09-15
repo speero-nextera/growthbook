@@ -1,4 +1,4 @@
-// Updated: 2026-08-18 10:45 by Silver
+// Updated: 2026-09-15 10:36 by Silver
 // Wait for the GrowthBook SDK to load before running
 window.dataLayer = window.dataLayer || [];
 window.growthbook_queue = window.growthbook_queue || [];
@@ -133,6 +133,8 @@ window.growthbook_queue.push(function(gb) {
   console.log('source: ' + currentCookie);
   window.growthbook_config.navigateDelay = 0.5; // Default is 0.1
   window.growthbook_config.maxNavigateDelay = 2; // Default is 1
+
+  window.growthbook_config.uuidCookieDomain = ".gexaenergy.com"
 })(); // End user source rules
 
 // Load GrowthBook
