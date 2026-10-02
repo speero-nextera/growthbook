@@ -132,7 +132,7 @@ window.growthbook_queue.push(function(gb) {
   }
   console.log('source: ' + currentCookie);
   window.growthbook_config.navigateDelay = 0.5; // Default is 0.1
-  window.growthbook_config.maxNavigateDelay = 2; // Default is 1
+  window.growthbook_config.maxNavigateDelay = 3; // Default is 1
 
   window.growthbook_config.uuidCookieDomain = ".gexaenergy.com"
 })(); // End user source rules
