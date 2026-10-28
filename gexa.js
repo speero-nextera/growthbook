@@ -143,6 +143,7 @@ window.growthbook_queue.push(function(gb) {
   window.growthbook_config = window.growthbook_config || {};
   window.growthbook_config.attributes = {
     user_source: currentCookie,
+    user_type: userType,
     qa_mode: getCookie('speero-qa-mode') || "false"
   }
   console.log('source: ' + currentCookie);
