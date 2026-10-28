@@ -23,6 +23,9 @@ window.growthbook_queue.push(function(gb) {
   var COOKIE_NAME = "speero-user-source";
   var COOKIE_DOMAIN = ".gexaenergy.com"; // works across all subdomains
   var COOKIE_MAX_AGE_SEC = 90 * 24 * 60 * 60;   // 90 days
+  var VISITOR_COOKIE_NAME = "speero-visitor";
+  var VISITOR_MAX_AGE_SEC = 180 * 24 * 60 * 60; // 180 days, restarted on every visit
+  var USER_TYPE_COOKIE_NAME = "speero-user-type"; // session cookie, keeps the type fixed for the session
 
   // --- helpers ---
   function getQueryParams() {
@@ -41,15 +44,16 @@ window.growthbook_queue.push(function(gb) {
     var m = document.cookie.match(new RegExp("(^|; )" + name.replace(/([.$?*|{}()[\]\\/+^])/g, "\\$1") + "=([^;]*)"));
     return m ? decodeURIComponent(m[2]) : null;
   }
-  function setCookie(name, value) {
+  function setCookie(name, value, maxAgeSec) {
     var attrs = [
       name + "=" + encodeURIComponent(value),
-      "Max-Age=" + COOKIE_MAX_AGE_SEC,
       "Path=/",
       "Domain=" + COOKIE_DOMAIN,
       "SameSite=Lax"
       // add "Secure" if strictly HTTPS
     ];
+    // omit Max-Age for a session cookie
+    if (maxAgeSec !== null) attrs.push("Max-Age=" + (maxAgeSec === undefined ? COOKIE_MAX_AGE_SEC : maxAgeSec));
     document.cookie = attrs.join("; ");
   }
 
@@ -122,9 +126,20 @@ window.growthbook_queue.push(function(gb) {
     currentCookie = "direct";
   }
 
+  // --- new vs returning user ---
+  // The type is decided on the first page view of a session and stored in a session cookie.
+  // The 180 day visitor cookie only decides the type of the next session.
+  var userType = getCookie(USER_TYPE_COOKIE_NAME);
+  if (userType !== "new" && userType !== "returning") {
+    userType = getCookie(VISITOR_COOKIE_NAME) ? "returning" : "new";
+    setCookie(USER_TYPE_COOKIE_NAME, userType, null);
+  }
+  setCookie(VISITOR_COOKIE_NAME, "1", VISITOR_MAX_AGE_SEC); // restart expiry on every visit
+
   // expose as global variable
   window.speero_user_source = currentCookie;
-  window.dataLayer.push({'event': 'speero-source-available', speero_source: currentCookie});
+  window.speero_user_type = userType;
+  window.dataLayer.push({'event': 'speero-source-available', speero_source: currentCookie, user_type: userType});
   window.growthbook_config = window.growthbook_config || {};
   window.growthbook_config.attributes = {
     user_source: currentCookie,
