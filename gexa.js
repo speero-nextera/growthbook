@@ -153,6 +153,42 @@ window.growthbook_queue.push(function(gb) {
   window.growthbook_config.uuidCookieDomain = ".gexaenergy.com"
 })(); // End user source rules
 
+// Renewal attributes: sent to GrowthBook as soon as the it_eligible_for_renewal event hits the dataLayer
+(function () {
+  var EVENT_NAME = "it_eligible_for_renewal";
+  var ATTRIBUTE_KEYS = ["account_id", "it_contract_expiration_date", "power_to_choose"];
+
+  function setRenewalAttributes(data) {
+    var attrs = {};
+    ATTRIBUTE_KEYS.forEach(function (key) {
+      if (data[key] !== undefined && data[key] !== null) attrs[key] = data[key];
+    });
+    // runs right away if the SDK is loaded, otherwise once it is ready
+    window.growthbook_queue.push(function (gb) {
+      gb.setAttributes(Object.assign({}, gb.getAttributes(), attrs));
+      document.dispatchEvent(new CustomEvent("speero-attributes-updated", { detail: attrs }));
+    });
+  }
+
+  function handle(item) {
+    try {
+      if (item && item.event === EVENT_NAME) setRenewalAttributes(item);
+    } catch (e) {
+      console.error("[Speero] Could not set renewal attributes:", e);
+    }
+  }
+
+  // event may already be in the dataLayer when this script runs
+  window.dataLayer.forEach(handle);
+
+  var originalPush = window.dataLayer.push;
+  window.dataLayer.push = function () {
+    var result = originalPush.apply(window.dataLayer, arguments);
+    for (var i = 0; i < arguments.length; i++) handle(arguments[i]);
+    return result;
+  };
+})(); // End renewal attributes
+
 // Load GrowthBook
 (function(s) {
     s = document.createElement('script'); 
