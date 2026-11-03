@@ -157,12 +157,16 @@ window.growthbook_queue.push(function(gb) {
 (function () {
   var EVENT_NAME = "it_eligible_for_renewal";
   var ATTRIBUTE_KEYS = ["account_id", "it_contract_expiration_date", "power_to_choose"];
+  var seen = new WeakSet();
 
   function setRenewalAttributes(data) {
     var attrs = {};
     ATTRIBUTE_KEYS.forEach(function (key) {
       if (data[key] !== undefined && data[key] !== null) attrs[key] = data[key];
     });
+    // read by the SDK if it has not initialised yet
+    window.growthbook_config = window.growthbook_config || {};
+    window.growthbook_config.attributes = Object.assign({}, window.growthbook_config.attributes, attrs);
     // runs right away if the SDK is loaded, otherwise once it is ready
     window.growthbook_queue.push(function (gb) {
       gb.setAttributes(Object.assign({}, gb.getAttributes(), attrs));
@@ -172,21 +176,34 @@ window.growthbook_queue.push(function(gb) {
 
   function handle(item) {
     try {
-      if (item && item.event === EVENT_NAME) setRenewalAttributes(item);
+      if (item && typeof item === "object" && item.event === EVENT_NAME && !seen.has(item)) {
+        seen.add(item);
+        setRenewalAttributes(item);
+      }
     } catch (e) {
       console.error("[Speero] Could not set renewal attributes:", e);
     }
   }
 
-  // event may already be in the dataLayer when this script runs
-  window.dataLayer.forEach(handle);
+  function scan() {
+    if (Array.isArray(window.dataLayer)) window.dataLayer.forEach(handle);
+  }
 
+  // catches the event the moment it is pushed
   var originalPush = window.dataLayer.push;
   window.dataLayer.push = function () {
-    var result = originalPush.apply(window.dataLayer, arguments);
+    var result = originalPush.apply(this, arguments);
     for (var i = 0; i < arguments.length; i++) handle(arguments[i]);
     return result;
   };
+
+  // backup for when the dataLayer is replaced or its push is overridden after this script (e.g. by GTM)
+  scan();
+  var scans = 0;
+  var timer = setInterval(function () {
+    scan();
+    if (++scans >= 100) clearInterval(timer); // stop after about 25 seconds
+  }, 250);
 })(); // End renewal attributes
 
 // Load GrowthBook
