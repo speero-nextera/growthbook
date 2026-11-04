@@ -153,9 +153,12 @@ window.growthbook_queue.push(function(gb) {
   window.growthbook_config.uuidCookieDomain = ".gexaenergy.com"
 })(); // End user source rules
 
-// Renewal attributes: sent to GrowthBook as soon as the it_eligible_for_renewal event hits the dataLayer
+// Renewal attributes: sent to GrowthBook as soon as the it_eligible_for_renewal or it_account_data event
+// hits the dataLayer, and account_id also from the it_account_data cookie
 (function () {
-  var EVENT_NAME = "it_eligible_for_renewal";
+  var EVENT_NAMES = ["it_eligible_for_renewal", "it_account_data"];
+  var ACCOUNT_COOKIE_NAME = "it_account_data";
+  var lastAccountCookie = null;
   var ATTRIBUTE_KEYS = ["account_id", "it_contract_expiration_date", "power_to_choose"];
   var seen = new WeakSet();
 
@@ -176,7 +179,7 @@ window.growthbook_queue.push(function(gb) {
 
   function handle(item) {
     try {
-      if (item && typeof item === "object" && item.event === EVENT_NAME && !seen.has(item)) {
+      if (item && typeof item === "object" && EVENT_NAMES.indexOf(item.event) !== -1 && !seen.has(item)) {
         seen.add(item);
         setRenewalAttributes(item);
       }
@@ -185,7 +188,25 @@ window.growthbook_queue.push(function(gb) {
     }
   }
 
+  // cookie value is either JSON or key=value pairs, account_id is read from it
+  function readAccountIdFromCookie() {
+    var raw = getCookie(ACCOUNT_COOKIE_NAME);
+    if (!raw || raw === lastAccountCookie) return;
+    lastAccountCookie = raw;
+    var accountId;
+    try {
+      var parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === "object") accountId = parsed.account_id;
+    } catch (_) {
+      accountId = new URLSearchParams(raw).get("account_id");
+    }
+    if (accountId !== undefined && accountId !== null && accountId !== "") {
+      setRenewalAttributes({ account_id: accountId });
+    }
+  }
+
   function scan() {
+    try { readAccountIdFromCookie(); } catch (e) { console.error("[Speero] Could not read " + ACCOUNT_COOKIE_NAME + " cookie:", e); }
     if (Array.isArray(window.dataLayer)) window.dataLayer.forEach(handle);
   }
 
