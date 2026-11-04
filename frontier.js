@@ -157,6 +157,7 @@ window.growthbook_queue.push(function(gb) {
 // hits the dataLayer, and account_id also from the it_account_data cookie
 (function () {
   var EVENT_NAMES = ["it_eligible_for_renewal", "it_account_data"];
+  var ACCOUNT_ID_COOKIE_NAME = "speero_it_account_id"; // plain account id
   var ACCOUNT_COOKIE_NAME = "it_account_data";
   var lastAccountCookie = null;
   var ATTRIBUTE_KEYS = ["account_id", "it_contract_expiration_date", "power_to_choose"];
@@ -188,17 +189,19 @@ window.growthbook_queue.push(function(gb) {
     }
   }
 
-  // cookie value is either JSON or key=value pairs, account_id is read from it
+  // account_id comes from the speero_it_account_id cookie, or from it_account_data (JSON or key=value pairs)
   function readAccountIdFromCookie() {
-    var raw = getCookie(ACCOUNT_COOKIE_NAME);
+    var accountId = getCookie(ACCOUNT_ID_COOKIE_NAME);
+    var raw = accountId || getCookie(ACCOUNT_COOKIE_NAME);
     if (!raw || raw === lastAccountCookie) return;
     lastAccountCookie = raw;
-    var accountId;
-    try {
-      var parsed = JSON.parse(raw);
-      if (parsed && typeof parsed === "object") accountId = parsed.account_id;
-    } catch (_) {
-      accountId = new URLSearchParams(raw).get("account_id");
+    if (!accountId) {
+      try {
+        var parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === "object") accountId = parsed.account_id;
+      } catch (_) {
+        accountId = new URLSearchParams(raw).get("account_id");
+      }
     }
     if (accountId !== undefined && accountId !== null && accountId !== "") {
       setRenewalAttributes({ account_id: accountId });
